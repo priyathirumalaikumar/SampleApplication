@@ -4,16 +4,13 @@ on:
   push:
     branches:
       - main
-
   workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout source code
         uses: actions/checkout@v4
 
@@ -34,14 +31,29 @@ jobs:
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
 
       # Release signing key
       - name: Decode release keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-            printf '%s' "$KEYSTORE_BASE64" | base64 --decode > app/release-key.jks
+          printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 --decode > app/release-key.jks
+          echo "Keystore created:"
+          ls -lh app/release-key.jks
+
+      # DEBUG - check what Gradle configuration contains
+      - name: Debug signing configuration
+        run: |
+          echo "===== JKS FILES ====="
+          find . -type f \( -name "*.jks" -o -name "*.keystore" \) -print
+
+          echo "===== SIGNING REFERENCES ====="
+          grep -RIn --exclude-dir=.git --exclude="*.jks" \
+            -E "my_release|release-key|storeFile|signingConfig|KEYSTORE" . || true
+
+          echo "===== GIT COMMIT ====="
+          git rev-parse HEAD
 
       # Tests
       - name: Run tests
