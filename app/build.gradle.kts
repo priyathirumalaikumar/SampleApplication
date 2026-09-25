@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.priya.sampleapplication"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.priya.sampleapplication"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -45,4 +45,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("androidx.work:work-runtime-ktx:2.10.1")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
 }
