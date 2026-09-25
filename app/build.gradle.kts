@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.firebase.appdistribution)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -47,4 +49,21 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("androidx.work:work-runtime-ktx:2.10.1")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
+}
+
+android {
+    signingConfigs {
+        create("release") {
+            storeFile = file(System.getenv("KEYSTORE_FILE") ?: "release-key.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
 }
