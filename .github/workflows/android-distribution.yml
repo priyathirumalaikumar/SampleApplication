@@ -38,7 +38,7 @@ jobs:
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 --decode > app/my_release.key.jks
+          printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 --decode > app/release-key.jks
           echo "Keystore created:"
           ls -lh app/release-key.jks
 
@@ -50,7 +50,7 @@ jobs:
 
           echo "===== SIGNING REFERENCES ====="
           grep -RIn --exclude-dir=.git --exclude="*.jks" \
-            -E "my_release|release-key|storeFile|signingConfig|KEYSTORE" . || true
+            -E "release-key|storeFile|signingConfig|KEYSTORE" . || true
 
           echo "===== GIT COMMIT ====="
           git rev-parse HEAD
